@@ -14,15 +14,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL",
-    "ssl": true,
-    "dialect": "postgres",
-    "protocol": "postgres",
-    "dialectOptions": {
-      "ssl": {
-        "require": true,
-        "rejectUnauthorized": false
-      }
-    }
+    "url": "postgres://qweecfgy:8dSLmRzmrpjuJnKOAqw-GBRzd10NJSa2@arjuna.db.elephantsql.com/qweecfgy",
+    "dialect": "postgres"
   }
 }
