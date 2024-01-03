@@ -5,25 +5,28 @@ const { queryInterface } = sequelize;
 const { payloadToToken } = require("../helpers/tokengen");
 const { hashThePassword } = require("../helpers/encryption");
 
+let dataUsers = require("../data/user.json");
 let dataFood = require("../data/foods.json");
+let dataCategories = require("../data/categories.json");
+let access_token, access_token2;
+
+dataUsers.forEach((e) => {
+  e.password = hashThePassword(e.password);
+  e.createdAt = new Date();
+  e.updatedAt = new Date();
+});
+
 dataFood.forEach((e) => {
   delete e.id;
   e.status = "Active";
   e.createdAt = new Date();
   e.updatedAt = new Date();
 });
-let dataUsers = require("../data/users.json");
-dataUsers.forEach((e) => {
-  e.password = hashThePassword(e.password);
-  e.createdAt = new Date();
-  e.updatedAt = new Date();
-});
-let dataCategories = require("../data/categories.json");
+
 dataCategories.forEach((e) => {
   e.createdAt = new Date();
   e.updatedAt = new Date();
 });
-let access_token, access_token2;
 
 beforeAll(async () => {
   await queryInterface.bulkInsert("Users", dataUsers, {});

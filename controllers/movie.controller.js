@@ -95,7 +95,6 @@ class MovieController {
     }
   }
   static async updateTheMovie(req, res, next) {
-    console.log(req.body, "<<<<<");
     const t = await sequelize.transaction();
     try {
       const { title, synopsis, trailerUrl, rating, imgUrl, cast, genre } =
@@ -122,7 +121,7 @@ class MovieController {
         where: { MovieId: theMovie.id },
         transaction: t,
       });
-      const genres =await genre.map((el) => ({
+      const genres = await genre.map((el) => ({
         MovieId: theMovie.id,
         GenreId: +el,
       }));

@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const router = require("./routers");
-const port = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -14,7 +13,9 @@ app.get("/", (req, res) => {
 });
 app.use("/", router);
 
-app.listen(port, () => {
-  console.log(process.env.NODE_ENV, "env");
-  console.log(`Listening on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(process.env.NODE_ENV, "env");
+//   console.log(`Listening on port ${port}`);
+// });
+
+module.exports = app;
