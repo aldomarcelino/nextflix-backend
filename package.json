@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "migrate": "NODE_ENV=production npx sequelize db:migrate",
+    "seed": "NODE_ENV=production npx sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

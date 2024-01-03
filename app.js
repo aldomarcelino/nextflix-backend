@@ -15,5 +15,6 @@ app.get("/", (req, res) => {
 app.use("/", router);
 
 app.listen(port, () => {
+  console.log(process.env.NODE_ENV, "env");
   console.log(`Listening on port ${port}`);
 });

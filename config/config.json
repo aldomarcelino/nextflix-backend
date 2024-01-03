@@ -14,7 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "url": "postgres://qweecfgy:8dSLmRzmrpjuJnKOAqw-GBRzd10NJSa2@arjuna.db.elephantsql.com/qweecfgy",
+    "username": "qweecfgy",
+    "password": "8dSLmRzmrpjuJnKOAqw-GBRzd10NJSa2",
+    "database": "qweecfgy",
+    "host": "arjuna.db.elephantsql.com",
     "dialect": "postgres"
   }
 }
