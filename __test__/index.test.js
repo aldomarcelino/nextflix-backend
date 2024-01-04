@@ -32,11 +32,11 @@ beforeAll(async () => {
   await queryInterface.bulkInsert("Users", dataUsers, {});
   await queryInterface.bulkInsert("Genres", dataGenres, {});
   await queryInterface.bulkInsert("Movies", dataMovies, {});
+
   let user = await User.findByPk(1, { raw: true });
-  delete user.password;
-  access_token = payloadToToken(user, "makan ikan");
+  access_token = payloadToToken({ id: user.id, email: user.email });
 });
- 
+
 describe("Admin sign up testing", () => {
   it("Sending with all correct data", () => {
     const data = {
@@ -161,6 +161,253 @@ describe("Admin sign up testing", () => {
   });
 });
 
+describe("Genre Creation Testing", () => {
+  it("Create genre with correct data", () => {
+    const data = {
+      name: "AA",
+    };
+    return request(app)
+      .post("/movies/genre")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toEqual("genre created successfully");
+      });
+  });
+
+  it("Create genre with empty name", () => {
+    const data = {
+      name: "",
+    };
+    return request(app)
+      .post("/movies/genre")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["genre is required"]);
+      });
+  });
+});
+
+describe("Create Movie Testing", () => {
+  it("Create movie with correct data", () => {
+    return request(app)
+      .post("/movies")
+      .send({
+        imgUrl:
+          "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
+        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
+        synopsis:
+          "Tenggelamnya Kapal Van der Wijck (judul internasional The Sinking of the van der Wijck) adalah film drama romantis Indonesia tahun 2013 yang disutradarai oleh Sunil Soraya dan diproduseri oleh Ram Soraya.",
+        rating: "80",
+        title: "Tenggelamnya Kapal Van der Wijck",
+        genre: ["1", "2", "3"],
+        cast: [
+          {
+            name: "Nabila",
+            profilePict:
+              "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/09/18/1973948211.jpg",
+          },
+        ],
+      })
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Movie added successfully");
+      });
+  });
+
+  it("Create movie with empty title", () => {
+    const data = {
+      // title: "",
+      synopsis: "AA",
+      trailerUrl: "AA",
+      rating: 20,
+      imgUrl: "AA",
+      cast: [{ name: "AA", profilePict: "AA" }],
+      genre: ["1"],
+    };
+    return request(app)
+      .post("/movies")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["title is required"]);
+      });
+  });
+
+  it("Create movie with empty synopsis", () => {
+    const data = {
+      title: "AA",
+      // synopsis: "AA",
+      trailerUrl: "AA",
+      rating: 20,
+      imgUrl: "AA",
+      cast: [{ name: "AA", profilePict: "AA" }],
+      genre: ["1"],
+    };
+    return request(app)
+      .post("/movies")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["synopsis is required"]);
+      });
+  });
+
+  it("Create movie with empty trailerUrl", () => {
+    const data = {
+      title: "AA",
+      synopsis: "AA",
+      // trailerUrl: "AA",
+      rating: 20,
+      imgUrl: "AA",
+      cast: [{ name: "AA", profilePict: "AA" }],
+      genre: ["1"],
+    };
+    return request(app)
+      .post("/movies")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["trailerUrl is required"]);
+      });
+  });
+
+  it("Create movie with empty rating", () => {
+    const data = {
+      title: "AA",
+      synopsis: "AA",
+      trailerUrl: "AA",
+      // rating: 20,
+      imgUrl: "AA",
+      cast: [{ name: "AA", profilePict: "AA" }],
+      genre: ["1"],
+    };
+    return request(app)
+      .post("/movies")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["rating is required"]);
+      });
+  });
+
+  it("Create movie with empty imgUrl", () => {
+    const data = {
+      title: "AA",
+      synopsis: "AA",
+      trailerUrl: "AA",
+      rating: 20,
+      // imgUrl: "AA",
+      cast: [{ name: "AA", profilePict: "AA" }],
+      genre: ["1"],
+    };
+    return request(app)
+      .post("/movies")
+      .set("access_token", access_token)
+      .send(data)
+      .then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toEqual(["imgUrl is required"]);
+      });
+  });
+});
+
+describe("Movie Edit Testing", () => {
+  it("Edit movie with correct data", () => {
+    return request(app)
+      .put("/movies/1")
+      .send({
+        imgUrl:
+          "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
+        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
+        synopsis:
+          "Tenggelamnya Kapal Van der Wijck (judul internasional The Sinking of the van der Wijck) adalah film drama romantis Indonesia tahun 2013 yang disutradarai oleh Sunil Soraya dan diproduseri oleh Ram Soraya.",
+        rating: "80",
+        title: "Tenggelamnya Kapal Van der Wijck",
+        genre: ["1", "2", "3"],
+        cast: [
+          {
+            name: "Nabila",
+            profilePict:
+              "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/09/18/1973948211.jpg",
+          },
+        ],
+      })
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("Movie update successfully");
+      });
+  });
+});
+
+describe("Genre Edit Testing", () => {
+  it("Edit genre with correct data", () => {
+    return request(app)
+      .put("/movies/genre/1")
+      .send({ name: "Action bro" })
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.statusCode).toBe(201);
+        expect(res.body.message).toBe("genre updated successfully");
+      });
+  });
+});
+
+describe("Get Movie and Genre List", () => {
+  it("Access all data movies without access_token ", () => {
+    return request(app)
+      .get("/public")
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body[0]).toHaveProperty("id", expect.any(Number));
+        expect(res.body[0]).toHaveProperty("title", expect.any(String));
+        expect(res.body[0]).toHaveProperty("imgUrl", expect.any(String));
+        expect(res.body[0]).toHaveProperty("synopsis", expect.any(String));
+        expect(res.body[0]).toHaveProperty("trailerUrl", expect.any(String));
+        expect(res.body[0]).toHaveProperty("slug", expect.any(String));
+        expect(res.body[0]).toHaveProperty("rating", expect.any(Number));
+      });
+  });
+
+  it("Access all data movies with access_token ", () => {
+    return request(app)
+      .get("/movies")
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body[0]).toHaveProperty("id", expect.any(Number));
+        expect(res.body[0]).toHaveProperty("title", expect.any(String));
+        expect(res.body[0]).toHaveProperty("imgUrl", expect.any(String));
+        expect(res.body[0]).toHaveProperty("synopsis", expect.any(String));
+        expect(res.body[0]).toHaveProperty("trailerUrl", expect.any(String));
+        expect(res.body[0]).toHaveProperty("slug", expect.any(String));
+        expect(res.body[0]).toHaveProperty("rating", expect.any(Number));
+      });
+  });
+
+  it("Access all data Genre with access_token ", () => {
+    return request(app)
+      .get("/movies/genre")
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body[0]).toHaveProperty("id", expect.any(Number));
+        expect(res.body[0]).toHaveProperty("name", expect.any(String));
+        expect(res.body[0]).toHaveProperty("createdAt", expect.any(String));
+        expect(res.body[0]).toHaveProperty("updatedAt", expect.any(String));
+      });
+  });
+});
+
 afterAll(async () => {
   await queryInterface.bulkDelete("Users", null, {
     truncate: true,
@@ -168,356 +415,3 @@ afterAll(async () => {
     restartIdentity: true,
   });
 });
-
-describe("Create Genre", () => {
-  it("Create genre with correct data", () => {
-      const data = {
-      name: "AA",
-      };
-      return request(app)
-      .post("/movies/genre")
-      .set("access_token", access_token)
-      .send(data)
-      .then((res) => {
-          expect(res.statusCode).toBe(201);
-          expect(res.body.message).toEqual("genre created successfully");
-          // expect(res.body.data).toHaveProperty("id", expect.any(Number));
-          // expect(res.body.data).toHaveProperty("name", expect.any(String));
-      });
-  });
-  
-  it("Create genre with empty name", () => {
-      const data = {
-      name: "",
-      };
-      return request(app)
-      .post("/movies/genre")
-      .set("access_token", access_token)
-      .send(data)
-      .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["genre is required"]);
-      });
-  });
-  });
-
-afterAll(async () => {
-  await queryInterface.bulkDelete("Genres", null, {
-      truncate: true,
-      cascade: true,
-      restartIdentity: true,
-  });
-});
-
-describe("Create Movie", () => {
-  it("Create movie with correct data", () => {
-    const data = {
-      imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-      trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-      synopsis:
-      "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-      rating: 100,
-      title: "KKN Desa Penari",
-      genre: [1, 2, 3],
-      cast: ["Nabila"],
-    };
-    return request(app)
-      .post("/movies")
-      .send(data)
-      .set("access_token", access_token)
-      .then((res) => {
-        expect(res.status).toBe(201);
-        expect(res.body).toHaveProperty("id", expect.any(Number));
-        expect(res.body).toHaveProperty("imgUrl", data.imgUrl);
-        expect(res.body).toHaveProperty("trailerUrl", data.trailerUrl);
-        expect(res.body).toHaveProperty("synopsis", data.synopsis);
-        expect(res.body).toHaveProperty("rating", data.rating);
-        expect(res.body).toHaveProperty("title", data.title);
-        expect(res.body).toHaveProperty("genre", data.genre);
-        expect(res.body).toHaveProperty("cast", data.cast);
-      });
-    });
-  
-    
-
-});
-
-afterAll(async () => {
-await queryInterface.bulkDelete("Movies", null, {
-  truncate: true,
-  cascade: true,
-  restartIdentity: true,
-});
-});
-
-
-describe("Create Movie", () => {
-it("Create movie with empty title", () => {
-    const data = {
-   // title: "",
-    synopsis: "AA",
-    trailerUrl: "AA",
-    rating: 20,
-    imgUrl: "AA",
-    cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["title is required"]);
-    });
-});
-
-it("Create movie with empty synopsis", () => {
-    const data = {
-    title: "AA",
-   // synopsis: "AA",
-    trailerUrl: "AA",
-    rating: 20,
-    imgUrl: "AA",
-    cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["synopsis is required"]);
-    });
-});
-
-it("Create movie with empty trailerUrl", () => {
-    const data = {
-    title: "AA",
-    synopsis: "AA",
-   // trailerUrl: "AA",
-    rating: 20,
-    imgUrl: "AA",
-    cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["trailerUrl is required"]);
-    });
-});
-
-it("Create movie with empty rating", () => {
-    const data = {
-    title: "AA",
-    synopsis: "AA",
-    trailerUrl: "AA",
-   // rating: 20,
-    imgUrl: "AA",
-    cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["rating is required"]);
-    });
-});
-
-it("Create movie with empty imgUrl", () => {
-    const data = {
-    title: "AA",
-    synopsis: "AA",
-    trailerUrl: "AA",
-    rating: 20,
-   // imgUrl: "AA",
-    cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["imgUrl is required"]);
-    });
-});
-
-it("Create movie with empty cast", () => {
-    const data = {
-    title: "AA",
-    synopsis: "AA",
-    trailerUrl: "AA",
-    rating: 20,
-    imgUrl: "AA",
-   // cast: [{name: "AA", profilePict: "AA"}],
-    genre: ["1"],
-    };
-    return request(app)
-    .post("/movies")
-    .set("access_token", access_token)
-    .send(data)
-    .then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toEqual(["cast is required"]);
-    });
-});
-
-});
-
-afterAll(async () => {
-await queryInterface.bulkDelete("Movies", null, {
-truncate: true,
-cascade: true,
-restartIdentity: true,
-});
-});
-//   it("Create genre with correct data", () => {
-//       const data = {
-//       name: "AA",
-//       };
-//       return request(app)
-//       .post("/genre")
-//       .set("access_token", access_token)
-//       .send(data)
-//       .then((res) => {
-//           expect(res.statusCode).toBe(201);
-//           expect(res.body.message).toEqual("genre created successfully");
-//           expect(res.body.data).toHaveProperty("id", expect.any(Number));
-//           expect(res.body.data).toHaveProperty("name", expect.any(String));
-//       });
-//   });
-  
-//   it("Create genre with empty name", () => {
-//       const data = {
-//       name: "",
-//       };
-//       return request(app)
-//       .post("/genre")
-//       .set("access_token", access_token)
-//       .send(data)
-//       .then((res) => {
-//           expect(res.statusCode).toBe(400);
-//           expect(res.body.message).toEqual(["genre is required"]);
-//       });
-//   });
-//   });
-
-// afterAll(async () => {
-//   await queryInterface.bulkDelete("Genres", null, {
-//       truncate: true,
-//       cascade: true,
-//       restartIdentity: true,
-//   });
-// });
-
-// describe("Create Movie", () => {
-//   it("Create movie with correct data", () => {
-//       const data = {
-//       title: "AA",
-//       synopsis: "AA",
-//       trailerUrl: "AA",
-//       rating: 20,
-//       imgUrl: "https://youtube.com",
-      
-//       };
-//       return request(app)
-//       .post("/movies")
-//       .set("access_token", access_token)
-//       .send(data)
-//       .then((res) => {
-//           expect(res.statusCode).toBe(201);
-//           expect(res.body.message).toEqual("movie created successfully");
-//           expect(res.body.data).toHaveProperty("id", expect.any(Number));
-//           expect(res.body.data).toHaveProperty("title", expect.any(String));
-//           expect(res.body.data).toHaveProperty("synopsis", expect.any(String));
-//           expect(res.body.data).toHaveProperty("trailerUrl", expect.any(String));
-//           expect(res.body.data).toHaveProperty("rating", expect.any(Number));
-//           expect(res.body.data).toHaveProperty("imgUrl", expect.any(String));
-//           expect(res.body.data).toHaveProperty("cast", expect.any(String));
-//           expect(res.body.data).toHaveProperty("genre", expect.any(String));
-//       });
-//   });
-
-  // it("Create movie with correct data", () => {
-  //   const data = {
-  //     title: "AA",
-  //     synopsis: "AA",
-  //     trailerUrl: "AA",
-  //     rating: 20,
-  //     imgUrl: "AA",
-  //     cast: [{ name: "AA", profilePict: "AA" }],
-  //     genre: ["1"],
-  //   };
-  //   return request(app)
-  //     .post("/movies")
-  //     .set("access_token", access_token)
-  //     .send(data)
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(201);
-  //       expect(res.body.message).toEqual("movie created successfully");
-  //       expect(res.body.data).toHaveProperty("id", expect.any(Number));
-  //       expect(res.body.data).toHaveProperty("title", expect.any(String));
-  //       expect(res.body.data).toHaveProperty("synopsis", expect.any(String));
-  //       expect(res.body.data).toHaveProperty("trailerUrl", expect.any(String));
-  //       expect(res.body.data).toHaveProperty("rating", expect.any(Number));
-  //       expect(res.body.data).toHaveProperty("imgUrl", expect.any(String));
-  //       expect(res.body.data).toHaveProperty("cast", expect.any(Array));
-  //       expect(res.body.data.cast[0]).toHaveProperty("name", expect.any(String));
-  //       expect(res.body.data.cast[0]).toHaveProperty("profilePict", expect.any(String));
-  //       expect(res.body.data).toHaveProperty("genre", expect.any(Array));
-  //     });
-  // });
-  
-
-
-// describe("Create Movie", () => {
-//   it("Create movie with correct data", () => {
-//     const data = {
-//       imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-//       trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-//       synopsis:
-//       "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-//       rating: 100,
-//       title: "KKN Desa Penari",
-//       genre: [1, 2, 3],
-//       cast: ["Nabila"],
-//     };
-//     return request(app)
-//       .post("/movies")
-//       .send(data)
-//       .then((res) => {
-//         expect(res.status).toBe(201);
-//         expect(res.body).toHaveProperty("id", expect.any(Number));
-//         expect(res.body).toHaveProperty("imgUrl", data.imgUrl);
-//         expect(res.body).toHaveProperty("trailerUrl", data.trailerUrl);
-//         expect(res.body).toHaveProperty("synopsis", data.synopsis);
-//         expect(res.body).toHaveProperty("rating", data.rating);
-//         expect(res.body).toHaveProperty("title", data.title);
-//         expect(res.body).toHaveProperty("genre", data.genre);
-//         expect(res.body).toHaveProperty("cast", data.cast);
-//       });
-//   });
-
-
-
-  
-
-// });
-
-// afterAll(async () => {
-// await queryInterface.bulkDelete("Movies", null, {
-//   truncate: true,
-//   cascade: true,
-//   restartIdentity: true,
-// });
-// });

@@ -65,6 +65,7 @@ class MovieController {
   static async addNewMovies(req, res, next) {
     const t = await sequelize.transaction();
     try {
+      console.log(req.body, "<<<reqbody");
       const { title, synopsis, trailerUrl, rating, imgUrl, cast, genre } =
         req.body;
       const movie = await Movie.create(

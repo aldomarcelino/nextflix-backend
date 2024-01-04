@@ -27,7 +27,6 @@ module.exports = {
         type: Sequelize.STRING,
       },
       poster_path: {
-        allowNull: false,
         type: Sequelize.STRING,
       },
       rating: {
@@ -35,7 +34,6 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       popularity: {
-        allowNull: false,
         type: Sequelize.INTEGER,
       },
       authorId: {
