@@ -29,7 +29,9 @@ dataMovies.forEach((e) => {
 });
 
 beforeAll(async () => {
+  await queryInterface.bulkInsert("Users", dataUsers, {});
   await queryInterface.bulkInsert("Genres", dataGenres, {});
+  await queryInterface.bulkInsert("Movies", dataMovies, {});
   let user = await User.findByPk(1, { raw: true });
   delete user.password;
   access_token = payloadToToken(user, "makan ikan");
@@ -38,16 +40,16 @@ beforeAll(async () => {
 describe("Create Genre", () => {
     it("Create genre with correct data", () => {
         const data = {
-        name: "AAAA",
+        name: "AA",
         };
         return request(app)
-        .post("/genre")
+        .post("/movies/genre")
         .set("access_token", access_token)
         .send(data)
         .then((res) => {
             expect(res.statusCode).toBe(201);
             expect(res.body.message).toEqual("genre created successfully");
-            expect(res.body.data).toHaveProperty("id", expect.any(Integer));
+            expect(res.body.data).toHaveProperty("id", expect.any(Number));
             expect(res.body.data).toHaveProperty("name", expect.any(String));
         });
     });
@@ -57,12 +59,20 @@ describe("Create Genre", () => {
         name: "",
         };
         return request(app)
-        .post("/genre")
+        .post("/genres")
         .set("access_token", access_token)
         .send(data)
         .then((res) => {
             expect(res.statusCode).toBe(400);
             expect(res.body.message).toEqual(["genre is required"]);
         });
+    });
+    });
+
+afterAll(async () => {
+    await queryInterface.bulkDelete("Genres", null, {
+        truncate: true,
+        cascade: true,
+        restartIdentity: true,
     });
 });

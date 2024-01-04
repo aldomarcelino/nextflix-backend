@@ -27,6 +27,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       poster_path: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       rating: {

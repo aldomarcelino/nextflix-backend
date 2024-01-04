@@ -1,5 +1,5 @@
 const errorHandler = async (err, req, res, next) => {
-  // console.log(err);
+  console.log(err, 'ini error handler');
   switch (err.name) {
     case "SequelizeValidationError":
       res

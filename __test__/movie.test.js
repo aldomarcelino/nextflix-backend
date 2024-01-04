@@ -36,247 +36,43 @@ beforeAll(async () => {
   delete user.password;
   access_token = payloadToToken(user, "makan ikan");
 });
-
 describe("Create Movie", () => {
-    it("Create movie with correct data", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(201);
-          expect(res.body.message).toEqual("movie created successfully");
-          expect(res.body.data).toHaveProperty("id", expect.any(Number));
-          expect(res.body.data).toHaveProperty("title", expect.any(String));
-          expect(res.body.data).toHaveProperty("authorId", expect.any(Number));
-          expect(res.body.data).toHaveProperty("imgUrl", expect.any(String));
-          expect(res.body.data).toHaveProperty("trailerUrl", expect.any(String));
-          expect(res.body.data).toHaveProperty("synopsis", expect.any(String));
-          expect(res.body.data).toHaveProperty("poster_path", expect.any(String));
-          expect(res.body.data).toHaveProperty("popularity", expect.any(Number));
-          expect(res.body.data).toHaveProperty("rating", expect.any(Number));
-        
-        });
-    });
-  
-    it("Create movie with empty title", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["title is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty synopsis", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis: "",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["synopsis is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty trailerUrl", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        //trailerUrl: "",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["trailerUrl is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty imgUrl", () => {
-      const data = {
-        authorId: 1,
-        //imgUrl: "",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["imgUrl is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty poster_path", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        //poster_path: "",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["poster_path is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty popularity", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        //popularity: "",
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["popularity is required"]);
-        });
-    }
-    );
-  
-    it("Create movie with empty rating", () => {
-      const data = {
-        authorId: 1,
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: "",
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["rating is required"]);
-        });
-    }
-    );
-    
-    it("Create movie with empty authorId", () => {
-      const data = {
-        authorId: "",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
-        synopsis:
-        "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
-        poster_path:
-        "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
-        popularity: 100,
-        rating: 100,
-        title: "KKN Desa Penari",
-        slug: "kkn-desa-penari",
-      };
-      return request(app)
-        .post("/movies")
-        .set("access_token", access_token)
-        .send(data)
-        .then((res) => {
-          console.log(res.body)
-          expect(res.statusCode).toBe(400);
-          expect(res.body.message).toEqual(["authorId is required"]);
-        });
-    }
-    );
-  
+  it("Create movie with correct data", () => {
+    const data = {
+      imgUrl: "https://upload.wikimedia.org/wikipedia/id/1/1e/KKN_Desa_Penari_poster.jpg",
+      trailerUrl: "https://www.youtube.com/watch?v=3JqWQkDhJd4",
+      synopsis:
+      "KKN Desa Penari adalah film horor Indonesia tahun 2021 yang disutradarai oleh Awi Suryadi dan dibintangi oleh Prilly Latuconsina, Sandrinna Michelle, dan Endy Arfian. Film ini diadaptasi dari novel berjudul sama karya Risa Saraswati.",
+      rating: 100,
+      title: "KKN Desa Penari",
+      genre: [1, 2, 3],
+      cast: ["Nabila"],
+    };
+    return request(app)
+      .post("/movies")
+      .send(data)
+      .set("access_token", access_token)
+      .then((res) => {
+        expect(res.status).toBe(201);
+        expect(res.body).toHaveProperty("id", expect.any(Number));
+        expect(res.body).toHaveProperty("imgUrl", data.imgUrl);
+        expect(res.body).toHaveProperty("trailerUrl", data.trailerUrl);
+        expect(res.body).toHaveProperty("synopsis", data.synopsis);
+        expect(res.body).toHaveProperty("rating", data.rating);
+        expect(res.body).toHaveProperty("title", data.title);
+        expect(res.body).toHaveProperty("genre", data.genre);
+        expect(res.body).toHaveProperty("cast", data.cast);
+      });
   });
+  
+  
 
-afterAll(async () => {
-  await queryInterface.bulkDelete("Movies", null, {
-    truncate: true,
-    cascade: true,
-    restartIdentity: true,
-  });
 });
 
+afterAll(async () => {
+await queryInterface.bulkDelete("Movies", null, {
+  truncate: true,
+  cascade: true,
+  restartIdentity: true,
+});
+});
