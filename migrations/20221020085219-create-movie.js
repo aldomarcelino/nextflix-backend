@@ -34,6 +34,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       popularity: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       authorId: {

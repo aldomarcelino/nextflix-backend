@@ -36,7 +36,7 @@ beforeAll(async () => {
   delete user.password;
   access_token = payloadToToken(user, "makan ikan");
 });
-
+ 
 describe("Admin sign up testing", () => {
   it("Sending with all correct data", () => {
     const data = {
