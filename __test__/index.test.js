@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const { sequelize, User } = require("../models");
 const { queryInterface } = sequelize;
-const { payloadToToken } = require("../helpers/tokengen");
+const { payloadToToken, tokenToPayload } = require("../helpers/tokengen");
 const { hashThePassword } = require("../helpers/encryption");
 const generateSlug = require("../helpers/sluggen");
 
@@ -405,6 +405,51 @@ describe("Get Movie and Genre List", () => {
         expect(res.body[0]).toHaveProperty("createdAt", expect.any(String));
         expect(res.body[0]).toHaveProperty("updatedAt", expect.any(String));
       });
+  });
+});
+
+describe("Generate Slag Title Function Test", () => {
+  it("should generate a slug from a title", () => {
+    const title = "Hello World";
+    const expectedSlug = "Hello-World";
+
+    const result = generateSlug(title);
+
+    expect(result).toBe(expectedSlug);
+  });
+
+  it("should handle titles with multiple spaces", () => {
+    const title = "Multiple  Spaces  Here ";
+    const expectedSlug = "Multiple--Spaces--Here-";
+
+    const result = generateSlug(title);
+
+    expect(result).toBe(expectedSlug);
+  });
+
+  it("should handle titles with special characters", () => {
+    const title = "!@#$%^&*()_+";
+    const expectedSlug = "!@#$%^&*()_+";
+
+    const result = generateSlug(title);
+
+    expect(result).toBe(expectedSlug);
+  });
+});
+
+describe("Jsonwebtoken Function Testing", () => {
+  it("should generate access token correctly", () => {
+    const accessToken = payloadToToken({ id: 1, email: "Asep Bareto" });
+    expect(accessToken).toStrictEqual(expect.any(String));
+  });
+
+  it("should generate payload correctly from access token", () => {
+    const accessToken = payloadToToken({ id: 1, email: "Asep Bareto" });
+    const payload = tokenToPayload(accessToken);
+
+    expect(accessToken).toStrictEqual(expect.any(String));
+    expect(payload).toHaveProperty("id", 1);
+    expect(payload).toHaveProperty("email", "Asep Bareto");
   });
 });
 
