@@ -14,10 +14,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "qweecfgy",
-    "password": "8dSLmRzmrpjuJnKOAqw-GBRzd10NJSa2",
-    "database": "qweecfgy",
-    "host": "arjuna.db.elephantsql.com",
+    "username": "ufutibpa",
+    "password": "J-mD-6xj7awv7BORQAffJh9r4MLDOvKz",
+    "database": "ufutibpa",
+    "host": "tiny.db.elephantsql.com",
     "dialect": "postgres"
   }
 }
